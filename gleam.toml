@@ -1,0 +1,15 @@
+name = "antigone"
+version = "1.0.0"
+description = "Argon2 password hashing for Gleam."
+licences = ["Apache-2.0"]
+repository = { type = "github", user = "lpil", repo = "antigone" }
+links = [
+  { title = "Website", href = "https://gleam.run" },
+  { title = "Sponsor", href = "https://github.com/sponsors/lpil" },
+]
+
+[dependencies]
+argon2_elixir = "~> 4.0"
+
+[dev-dependencies]
+gleeunit = "~> 1.0"
