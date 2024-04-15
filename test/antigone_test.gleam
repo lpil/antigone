@@ -48,3 +48,11 @@ pub fn readme_low_cost_example_test() {
     |> antigone.hash(<<password:utf8>>)
   let assert "$argon2id$v=19$m=256,t=1,p=4$" <> _ = hash
 }
+
+pub fn fake_verify_test() {
+  // Check fake_verify is callable without failure
+  antigone.hasher()
+  |> antigone.time_cost(1)
+  |> antigone.memory_cost(8)
+  |> antigone.fake_verify()
+}

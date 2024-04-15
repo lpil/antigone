@@ -104,7 +104,38 @@ pub fn argon2_type(hasher: Hasher, argon2_type: Argon2Type) -> Hasher {
 /// Hash the given data with a randomly generated salt.
 ///
 pub fn hash(hasher: Hasher, data: BitArray) -> String {
-  elixir_hash(data, gen_salt(), [
+  elixir_hash(data, gen_salt(), hasher_to_elixir_opts(hasher))
+}
+
+/// Verify in constant time that the given data matches the given hash.
+///
+@external(erlang, "Elixir.Argon2", "verify_pass")
+pub fn verify(data: BitArray, hash: String) -> Bool
+
+/// Runs the password hash function but doesn't return any data.
+///
+/// This function is intended to make it more difficult for any potential
+/// attacker to find valid usernames by using timing attacks. This function
+/// is only useful if it is used as part of a policy of hiding usernames.
+///
+pub fn fake_verify(hasher: Hasher) {
+  elixir_no_user_verify(hasher_to_elixir_opts(hasher))
+  Nil
+}
+
+@external(erlang, "Elixir.Argon2", "no_user_verify")
+fn elixir_no_user_verify(options options: List(ElixirOption)) -> Bool
+
+type ElixirOption {
+  TCost(Int)
+  MCost(Int)
+  Parallelism(Int)
+  HashLen(Int)
+  Argon2Type(Int)
+}
+
+fn hasher_to_elixir_opts(hasher: Hasher) -> List(ElixirOption) {
+  [
     TCost(hasher.time_cost),
     MCost(hasher.memory_cost),
     HashLen(hasher.hash_length),
@@ -114,20 +145,7 @@ pub fn hash(hasher: Hasher, data: BitArray) -> String {
       Argon2i -> 1
       Argon2id -> 2
     }),
-  ])
-}
-
-/// Verify in constant time that the given data matches the given hash.
-///
-@external(erlang, "Elixir.Argon2", "verify_pass")
-pub fn verify(data: BitArray, hash: String) -> Bool
-
-type ElixirOption {
-  TCost(Int)
-  MCost(Int)
-  Parallelism(Int)
-  HashLen(Int)
-  Argon2Type(Int)
+  ]
 }
 
 @external(erlang, "Elixir.Argon2.Base", "hash_password")
