@@ -14,11 +14,12 @@ gleam add antigone
 ```
 ```gleam
 import antigone
+import gleam/bit_array
 
 pub fn main() {
   // You've got a password or token you wish to hash so that you can verify it
   // later without having to store the password or hash itself.
-  let password = "blink182"
+  let password = bit_array.from_string("blink182")
 
   // Hash the password with the default configuration:
   antigone.hash(antigone.hasher(), password)
